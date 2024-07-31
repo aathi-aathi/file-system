@@ -3,15 +3,23 @@ import fs from 'fs'
 const server = express()
 server.use(express.json())
 server.get('/write',(req,res)=>{
-  fs.writeFileSync(`fs-files/${Date.now().toString()}.txt`,
+  try {
+     fs.writeFileSync(`fs-files/${Date.now().toString()}.txt`,
   new Date().toISOString())
   res.send('file created successfully')
-})
+  } catch (error) {
+    res.status(500).send(error)
+  }
+ })
 server.get('/read',(req,res)=>{
-     const data = fs.readdirSync('fs-files','utf-8')
+  try {
+      const data = fs.readdirSync('fs-files','utf-8')
      res.send(data)
+  } catch (error) {
+     res.status(500).send(error)
+  }
+   
   })
-
 const port = 8020;
 server.listen(port,()=>{
     console.log('port is running at '+ port)
